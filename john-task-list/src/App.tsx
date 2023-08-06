@@ -9,8 +9,6 @@ import { Container } from './styles';
 
 function App() {
 
-
-
   return (
     <>
     <Container>

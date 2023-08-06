@@ -1,5 +1,5 @@
 import { Task } from "../../types"
-import Checkbox from '../new-checkbox';
+import Checkbox from '../checkbox';
 import { Container, ListItemText } from "./styles"
 
 interface ListItemProps {

@@ -14,7 +14,7 @@ export const Container = styled.div<ContainerProps>`
   max-width: 1200px;
   margin: 0 auto;
   margin-top: 2px;
-  padding: 8px 24px;
+  padding: 5px 24px;
   border: '1px solid lightgrey';
   border-radius: 4;
   ${props =>

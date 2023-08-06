@@ -25,7 +25,7 @@ const mockedTasks : Array<Task> = [
   {
 
     id: '4',
-    text: 'Task 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
+    text: 'Task 4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
     completed: false,
   }
 ]
@@ -59,6 +59,9 @@ const toggleCompleted = (taskId: string) => {
         {(provided) => (
           <ul
             {...provided.droppableProps}
+            style={{
+              listStyle: 'none',
+            }}
             ref={provided.innerRef}
           >
             {tasks.map((task, index) => (
