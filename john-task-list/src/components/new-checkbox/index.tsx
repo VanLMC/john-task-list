@@ -9,13 +9,12 @@ import {
 } from "react-spring";
 
 interface Checkbox {
-  name: string;
   isChecked: boolean;
   setIsChecked: (value: boolean) => void;
 }
 
 
-function Checkbox({name = '', isChecked, setIsChecked }: Checkbox) {
+function Checkbox({isChecked, setIsChecked }: Checkbox) {
 
   const checkboxAnimationRef = useSpringRef();
   const checkboxAnimationStyle = useSpring({
@@ -70,7 +69,6 @@ function Checkbox({name = '', isChecked, setIsChecked }: Checkbox) {
           strokeDashoffset={checkmarkAnimationStyle.x}
         />
       </animated.svg>
-     {name}
     </label>
   );
 }
