@@ -1,7 +1,7 @@
 import styled, {css} from 'styled-components';
 
 interface ContainerProps {
-    completed: boolean,
+    $completed: boolean,
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -15,14 +15,17 @@ export const Container = styled.div<ContainerProps>`
   margin: 0 auto;
   margin-top: 2px;
   padding: 8px 24px;
+  border: '1px solid lightgrey';
+  border-radius: 4;
   ${props =>
-    props.completed &&
+    props.$completed &&
     css`
       background-color: #bcf3de;
   `}
 
   max-height: 3em;
   overflow: hidden;
+  user-select: none;
 `;
 
 export const ListItemText = styled.p`

@@ -8,7 +8,14 @@ import {
   useChain
 } from "react-spring";
 
-function Checkbox({name = '', isChecked, setIsChecked}) {
+interface Checkbox {
+  name: string;
+  isChecked: boolean;
+  setIsChecked: (value: boolean) => void;
+}
+
+
+function Checkbox({name = '', isChecked, setIsChecked }: Checkbox) {
 
   const checkboxAnimationRef = useSpringRef();
   const checkboxAnimationStyle = useSpring({
@@ -18,7 +25,8 @@ function Checkbox({name = '', isChecked, setIsChecked}) {
     ref: checkboxAnimationRef
   });
 
-  const [checkmarkLength, setCheckmarkLength] = useState(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [checkmarkLength, setCheckmarkLength] = useState<any>(null);
 
   const checkmarkAnimationRef = useSpringRef();
   const checkmarkAnimationStyle = useSpring({
@@ -45,8 +53,6 @@ function Checkbox({name = '', isChecked, setIsChecked}) {
       <animated.svg
         style={checkboxAnimationStyle}
         className={`checkbox ${isChecked ? "checkbox--active" : ""}`}
-        // This element is purely decorative so
-        // we hide it for screen readers
         aria-hidden="true"
         viewBox="0 0 15 11"
         fill="none"
