@@ -2,6 +2,7 @@ import styled, {css} from 'styled-components';
 
 interface ContainerProps {
     $completed: boolean,
+    $collapsed?:boolean,
 }
 
 export const Container = styled.div<ContainerProps>`
@@ -21,6 +22,12 @@ export const Container = styled.div<ContainerProps>`
     props.$completed &&
     css`
       background-color: #bcf3de;
+  `}
+
+  ${props =>
+    props.$collapsed &&
+    css`
+      border-bottom: 8px solid #c5adc7;
   `}
 
   max-height: 3em;
