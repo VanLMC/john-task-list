@@ -1,97 +1,52 @@
-
-
-
-import React, { useState } from 'react';
-import { DragDropContext, Draggable, Droppable, DropResult } from 'react-beautiful-dnd';
+import React from 'react';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import ListItem from '../list-item';
-import { Task } from '../../types';
 import { SubtasksContainer } from './styles';
-
-const mockedTasks : Array<Task> = [
-  {
-    id: '1',
-    text: 'Task 1 yadayadayadayadada',
-    completed: false,
-  },
-  {
-    id: '2',
-    text: 'Task 2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos sed hic delectus porro blanditiis maxime, et velit, sit eum at ipsum nesciunt. Et numquam impedit veniam reprehenderit architecto.',
-    completed: false,
-    subtasks: [
-      {
-        id: '1',
-        text: 'SubTask 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
-        completed: false,
-      },
-      {
-        id: '2',
-        text: 'SubTask 4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
-        completed: false,
-      },
-    ]
-  },
-  {
-    id: '3',
-    text: 'Task 3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
-    completed: false,
-  },
-  {
-
-    id: '4',
-    text: 'Task 4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae dolor eos s',
-    completed: false,
-        subtasks: [
-      {
-        id: '1',
-        text: 'SubTask 3 Lorem ipsum dolor sit a',
-        completed: false,
-      },
-      {
-        id: '2',
-        text: 'SubTask 4 Lorem ipsum dolor sit amet conse',
-        completed: false,
-      },
-      {
-        id: '3',
-        text: 'SubTask 4 Lorem ipsum dolor sit amet consect',
-        completed: false,
-      },
-    ]
-
-  }
-]
+import { useTaskStore } from '../../store/task';
+import { Task } from '../../types';
+import { v4 as uuidv4 } from 'uuid';
 
 const DraggableList: React.FC = () => {
+  const [
+    tasks,
+    setTasks,
+    toggleCompleted,
+    toggleCompletedSubtasks,
+    toggleCollapsed,
+    onDragEnd,
+    removeTask,
+    removeSubtask,
+  ] = useTaskStore((state) => [
+    state.tasks,
+    state.setTasks,
+    state.toggleCompleted,
+    state.toggleCompletedSubtasks,
+    state.toggleCollapsed,
+    state.onDragEnd,
+    state.removeTask,
+    state.removeSubTask,
+  ]);
 
-const [tasks, setTasks]  = useState(mockedTasks);
+  const handleAddNewSubTask = (taskId: string, text: string) => {
+    const newSubTask: Task = {
+      id: uuidv4(),
+      text: text,
+      completed: false,
+      collapsed: true,
+    };
 
-const toggleCompleted = (taskId: string) => {
-  const taskIndex = tasks.findIndex((task) => task.id === taskId);
-  if(taskIndex === -1) return;
-  const updatedTasks = [...tasks];
-  updatedTasks[taskIndex].completed = !updatedTasks[taskIndex].completed;
-  setTasks(updatedTasks);
+    const taskIndex = tasks.findIndex((task) => task.id === taskId);
+    const subtasks = tasks[taskIndex].subtasks;
 
-}
+    if (taskIndex === -1) return;
 
-const toggleCollapsed = (taskId: string) => {
-  const taskIndex = tasks.findIndex((task) => task.id === taskId);
-  if(taskIndex === -1) return;
-  if(!tasks[taskIndex].subtasks) return;
-  const updatedTasks = [...tasks];
-  updatedTasks[taskIndex].collapsed = !updatedTasks[taskIndex].collapsed;
-  setTasks(updatedTasks);
+    const updatedSubtasks = [...(subtasks || []), newSubTask];
 
-}
+    const updatedTasks = [...tasks];
 
-  const onDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+    updatedTasks[taskIndex].subtasks = updatedSubtasks;
 
-    const reorderedItems = Array.from(tasks);
-    const [movedItem] = reorderedItems.splice(result.source.index, 1);
-    reorderedItems.splice(result.destination.index, 0, movedItem);
-
-    setTasks(reorderedItems);
+    setTasks(updatedTasks);
   };
 
   return (
@@ -105,26 +60,45 @@ const toggleCollapsed = (taskId: string) => {
             }}
             ref={provided.innerRef}
           >
-            {tasks.map((task, index) => (
-              <Draggable key={task.id} draggableId={task.id} index={index}>
-                {(provided) => (
-                  <li
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  >
-                  <ListItem
-                    task={task}
-                    toggleCompleted={toggleCompleted}
-                    toggleCollapsed={toggleCollapsed}
-                  />
-                  {!task.collapsed && <SubtasksContainer>
-                    {task.subtasks?.map((task) => <ListItem task={task} toggleCompleted={() => {}} toggleCollapsed={() => {}}   />)}
-                  </SubtasksContainer>}
-                  </li>
-                )}
-              </Draggable>
-            ))}
+            {tasks &&
+              tasks.map((task, index) => (
+                <Draggable key={task.id} draggableId={task.id} index={index}>
+                  {(provided) => (
+                    <li
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                    >
+                      <ListItem
+                        type="TASK"
+                        task={task}
+                        toggleCompleted={toggleCompleted}
+                        toggleCollapsed={toggleCollapsed}
+                        removeTask={removeTask}
+                        handleAddNewSubTask={(text: string) => {
+                          handleAddNewSubTask(task.id, text);
+                        }}
+                      />
+                      {!task.collapsed && (
+                        <SubtasksContainer>
+                          {task.subtasks?.map((subtask) => (
+                            <ListItem
+                              type="SUBTASK"
+                              task={subtask}
+                              toggleCompleted={() =>
+                                toggleCompletedSubtasks(task.id, subtask.id)
+                              }
+                              removeTask={() =>
+                                removeSubtask(task.id, subtask.id)
+                              }
+                            />
+                          ))}
+                        </SubtasksContainer>
+                      )}
+                    </li>
+                  )}
+                </Draggable>
+              ))}
             {provided.placeholder}
           </ul>
         )}
