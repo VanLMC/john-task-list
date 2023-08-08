@@ -1,27 +1,25 @@
-import "./styles.css";
-import { useState } from "react";
+import './styles.css';
+import { useState } from 'react';
 import {
   animated,
   useSpring,
   config,
   useSpringRef,
-  useChain
-} from "react-spring";
+  useChain,
+} from 'react-spring';
 
 interface Checkbox {
   isChecked: boolean;
   setIsChecked: (value: boolean) => void;
 }
 
-
-function Checkbox({isChecked, setIsChecked }: Checkbox) {
-
+function Checkbox({ isChecked, setIsChecked }: Checkbox) {
   const checkboxAnimationRef = useSpringRef();
   const checkboxAnimationStyle = useSpring({
-    backgroundColor: isChecked ? "#c5adc7" : "#fff",
-    borderColor: isChecked ? "#c5adc7" : "#ddd",
+    backgroundColor: isChecked ? '#c5adc7' : '#fff',
+    borderColor: isChecked ? '#c5adc7' : '#ddd',
     config: config.gentle,
-    ref: checkboxAnimationRef
+    ref: checkboxAnimationRef,
   });
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,7 +29,7 @@ function Checkbox({isChecked, setIsChecked }: Checkbox) {
   const checkmarkAnimationStyle = useSpring({
     x: isChecked ? 0 : checkmarkLength,
     config: config.gentle,
-    ref: checkmarkAnimationRef
+    ref: checkmarkAnimationRef,
   });
 
   useChain(
@@ -51,7 +49,7 @@ function Checkbox({isChecked, setIsChecked }: Checkbox) {
       />
       <animated.svg
         style={checkboxAnimationStyle}
-        className={`checkbox ${isChecked ? "checkbox--active" : ""}`}
+        className={`checkbox ${isChecked ? 'checkbox--active' : ''}`}
         aria-hidden="true"
         viewBox="0 0 15 11"
         fill="none"
